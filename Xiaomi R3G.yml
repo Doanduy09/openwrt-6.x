@@ -1,9 +1,8 @@
-
 #
 # Copyright (c) 2023
 #
 
-name: jdcloud ax1800 pro
+name: Xiaomi R3G
 on:
   schedule:
     - cron: '0 16 * * 2'
@@ -28,7 +27,7 @@ env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: .config-jdc
+  CONFIG_FILE: .config-3g
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
@@ -80,11 +79,18 @@ jobs:
            git fetch origin --tags
            git describe --tags $(git rev-list --tags --max-count=1) > immortalwrt_version
            git checkout -f $(git describe --tags $(git rev-list --tags --max-count=1))
+           rm -rf feeds/packages/net/mosdns
+           rm -rf feeds/packages/net/msd_lite
+           rm -rf feeds/packages/net/smartdns
+           rm -rf feeds/luci/themes/luci-theme-argon
+           rm -rf feeds/luci/applications/luci-app-mosdns
+           rm -rf feeds/luci/applications/luci-app-netdata
            echo "src-git modem https://github.com/kiddin9/openwrt-packages.git" >> "feeds.conf.default"
+           git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
            rm -rf feeds/packages/lang/golang
            git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
 
-
+          
       - name: Update feeds
         run: cd openwrt && ./scripts/feeds update -a
 
